@@ -1,0 +1,17 @@
+{
+  "name": "sequelize-testes",
+  "version": "1.0.0",
+  "description": "Treinado e testando conceitos do sequelize para ORM em Nodejs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "pg": "^7.11.0",
+    "pg-hstore": "^2.3.3",
+    "sequelize": "^5.8.12",
+    "sequelize-cli": "^5.5.0"
+  }
+}
