@@ -1,7 +1,23 @@
 const Sequelize = require('sequelize');
+const express = require('express');
+
+const PORT = 3000;
+const HOST = '0.0.0.0';
+
+const app = express();
+
+app.get('/', (req, res) => {
+  res.send('Hello World A');
+});
+
+app.listen(PORT, HOST, () => {
+  console.log(`Aplication running on ${HOST}:${PORT}`);
+});
+
+
 
 // Configurando conexão
-const sequelize = new Sequelize('postgres://postgres:postgres@localhost:5432/sequelize');
+const sequelize = new Sequelize('postgres://postgres:postgres@db:5433/teste');
 
 // Testando conexão no banco de dados
 sequelize
