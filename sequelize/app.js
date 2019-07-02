@@ -1,106 +1,45 @@
-const Sequelize = require('sequelize');
 const express = require('express');
+const bodyParser = require('body-parser');
 
 const PORT = 3000;
 const HOST = '0.0.0.0';
 
 const app = express();
 
-app.get('/', (req, res) => {
-  res.send('Hello World A');
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+const { User } = require('./models');
+
+app.post('/register', async (req, res) => {
+  const user = await User.create(req.body);
+  res.json(user);
+});
+
+app.get('/find/:id', async (req, res) => {
+  console.log(req.params.id);
+  const user = await User.findByPk(req.params.id);
+  res.json(user);
+});
+
+app.get('/findall', async (req, res) => {
+  const users = await User.findAll();
+  res.json(users);
+});
+
+app.put('/update/:id', async(req, res) => {
+  let user = await User.findByPk(req.params.id);
+  const newUserParams = req.body;
+  user = await user.update(newUserParams);
+  res.json(user);
+});
+
+app.delete('/delete/:id', async (req, res) => {
+  let user = await User.findByPk(req.params.id);
+  user.destroy({ force: true });
+  res.json('User deleted with success!');
 });
 
 app.listen(PORT, HOST, () => {
   console.log(`Aplication running on ${HOST}:${PORT}`);
 });
-
-
-
-// Configurando conexão
-const sequelize = new Sequelize('postgres://postgres:postgres@db:5432/teste');
-
-// Testando conexão no banco de dados
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log('Connection has been established successfully.');
-  })
-  .catch(err => {
-    console.error('Unable to connect to the database:', err);
-  });
-
-// Criando uma entidade (model)
-const User = sequelize.define('user', {
-  // attributes
-  firstName: {
-    type: Sequelize.STRING,
-    allowNull: false
-  },
-  lastName: {
-    type: Sequelize.STRING
-    // allowNull defaults to true
-  }
-}, {
-    // options
-  });
-
-// Find all users
-User.findAll().then(users => {
-  console.log("All users:", JSON.stringify(users, null, 4));
-});
-
-// Create a new user
-User.create({ firstName: "Jane", lastName: "Doe" }).then(jane => {
-  console.log("Jane's auto-generated ID:", jane.id);
-});
-
-// Delete everyone named "Jane"
-User.destroy({
-  where: {
-    firstName: "Jane"
-  }
-}).then(() => {
-  console.log("Done");
-});
-
-// Change everyone without a last name to "Doe"
-User.update({ lastName: "Doe" }, {
-  where: {
-    lastName: null
-  }
-}).then(() => {
-  console.log("Done");
-});
-
-class Employee extends Sequelize.Model {}
-Employee.init({
-  name: {
-    type: Sequelize.STRING,
-    allowNull: false,
-    get() {
-      const title = this.getDataValue('title');
-      // 'this' allows you to access attributes of the instance
-      return this.getDataValue('name') + ' (' + title + ')';
-    },
-  },
-  title: {
-    type: Sequelize.STRING,
-    allowNull: false,
-    set(val) {
-      this.setDataValue('title', val.toUpperCase());
-    }
-  }
-}, { sequelize, modelName: 'employee' });
-
-sequelize.sync();
-
-Employee
-  .create({ name: 'John Doe', title: 'senior engineer' })
-  .then(employee => {
-    console.log(employee.get('name')); // John Doe (SENIOR ENGINEER)
-    console.log(employee.get('title')); // SENIOR ENGINEER
-  })
-
-
-// Cria ou dropa e cria tabelas no banco
-sequelize.sync();
