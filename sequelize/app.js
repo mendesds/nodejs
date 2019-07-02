@@ -17,7 +17,7 @@ app.listen(PORT, HOST, () => {
 
 
 // Configurando conexão
-const sequelize = new Sequelize('postgres://postgres:postgres@db:5433/teste');
+const sequelize = new Sequelize('postgres://postgres:postgres@db:5432/teste');
 
 // Testando conexão no banco de dados
 sequelize
